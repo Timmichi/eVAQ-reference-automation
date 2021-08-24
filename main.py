@@ -32,14 +32,17 @@ def get_ref(line, ref_number):
 def phone_format(n):                                                                                                                                  
     return format(int(n[:-1]), ",").replace(",", "-") + n[-1]  
 
-def check_references(references):
+def create_dataframe(references):
+    reference_list = []
     for key, value in references.items():
-        answer = input(f"Is Reference #{key[-1]}'s {key[:-1]}: {value}? (If YES enter \"y\". If NO, type in the correct {key[:-1]}.)\n")
-        if answer != "y":
-            references[key] = answer
-    
+        reference_list.append(value)
+    df = pd.DataFrame(reference_list,index='Ref #1:,Ref #2:,Ref #3:'.split(","),columns='Name,Title,Phone #,Email Address,Project Title'.split(","))
+    return df
+
+
+
 def main():
-    references = {}
+    references = {1: [None]*5, 2: [None]*5, 3: [None]*5}
     ref_number = -1
     with pdfplumber.open("output.pdf") as pdf:
         page = pdf.pages[1]
@@ -47,23 +50,23 @@ def main():
         text = text.split("\n")
         for line in text:
             ref_number = get_ref(line, ref_number)
-            print(ref_number, line)
             if 1 <= ref_number <= 3:
                 if "Name:" in line and "Title:" in line: 
                     line = re.split('Name:|Title:', line)
-                    references[f"name{ref_number}"] = " ".join(line[1].split()).strip()
-                    references[f"title{ref_number}"] = " ".join(line[2].split()).strip()
+                    references[ref_number][0] = " ".join(line[1].split()).strip()
+                    references[ref_number][1] = " ".join(line[2].split()).strip()
                 elif "Phone" in line and "Address:" in line:
                     line = re.split('#:|#|Email  Address:|Email Address:|Adderss:', line)
-                    references[f"phone number{ref_number}"] = phone_format("" .join(list(filter(lambda char: char.isdigit(), "".join(line[1].split())))))
-                    references[f"email{ref_number}"] = " ".join(line[2].split()).strip().replace(" ", "")
+                    references[ref_number][2] = phone_format("" .join(list(filter(lambda char: char.isdigit(), "".join(line[1].split())))))
+                    references[ref_number][3] = " ".join(line[2].split()).strip().replace(" ", "")
                 elif "Project" in line and "Title" in line and "Summary:" in line:
                     line = re.split('Summary:', line)
-                    references[f"project_title{ref_number}"] = " ".join(line[1].split()).strip()
-    df = pd.DataFrame(references.values(),index='Reference 1, Reference 2, Reference 3'.split(),columns='name, title, phone number, email, project_title'.split(","))
-    print(df)
-    check_references(references)
-    print(references)
+                    references[ref_number][4] = " ".join(line[1].split()).strip()
+    incorrect = True
+    while incorrect:
+        print(create_dataframe(references))
+        if input("")
+        
 
 
 # checking if the module being ran is imported or is directly being ran
