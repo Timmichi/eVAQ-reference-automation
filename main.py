@@ -1,19 +1,13 @@
 '''
 1. Install Chocolatey: https://chocolatey.org/install
 2. Install pre tesseract, and ghostcript using choco. Install ocrmypdf using pip. https://ocrmypdf.readthedocs.io/en/latest/installation.html#installing-on-windows
+3. Install pdfplumber (pip install pdfplumber)
+4. Install pandas https://stackoverflow.com/questions/13842088/set-value-for-particular-cell-in-pandas-dataframe-using-index
 '''
 import os
 import pdfplumber
 import re
 import pandas as pd
-import numpy as np
-
-# Use os to find all files in the folder and loop through
-# myPdf = "eVAQ.pdf"
-
-# os.system(f'ocrmypdf {myPdf} output.pdf --force-ocr')
-
-
 
 # Helper functions
 
@@ -36,12 +30,15 @@ def create_dataframe(references):
     reference_list = []
     for key, value in references.items():
         reference_list.append(value)
-    df = pd.DataFrame(reference_list,index='Ref #1:,Ref #2:,Ref #3:'.split(","),columns='Name,Title,Phone #,Email Address,Project Title'.split(","))
+    df = pd.DataFrame(reference_list,index='Ref 1:,Ref 2:,Ref 3:'.split(","),columns='Name,Title,Phone #,Email Address,Project Title'.split(","))
     return df
 
-
+# main function
 
 def main():
+    # Use os to find all files in the folder and loop through
+    pdf_name = "eVAQ.pdf"
+    print(os.system(f'ocrmypdf {pdf_name} output.pdf --force-ocr'))
     references = {1: [None]*5, 2: [None]*5, 3: [None]*5}
     ref_number = -1
     with pdfplumber.open("output.pdf") as pdf:
@@ -63,11 +60,22 @@ def main():
                     line = re.split('Summary:', line)
                     references[ref_number][4] = " ".join(line[1].split()).strip()
     incorrect = True
+    df = create_dataframe(references)
     while incorrect:
-        print(create_dataframe(references))
-        if input("")
-        
-
+        print(df)
+        answer = input("If there ARE mistakes, enter the reference #, followed by the column name (e.g. \"1,Phone #\"). If NO mistakes, enter \"Finished\".\n")
+        answer = answer.split(",")
+        if len(answer) == 2:
+            row = f"Ref {answer[0]}:"
+            column = answer[1].strip()
+            if row in df.index and column in df.columns:
+                df.at[row, column] = input("Type in the correct value for this cell: ") 
+            else:
+                print("Please enter a valid row and column name!")
+        elif answer == ["Finished"]:
+            incorrect = False
+        else:
+            print("Please enter selection in correct format!")
 
 # checking if the module being ran is imported or is directly being ran
 # https://stackoverflow.com/questions/419163/what-does-if-name-main-do
