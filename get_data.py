@@ -1,6 +1,5 @@
-import os
-import pdfplumber
 import re
+import pdfplumber
 import pandas as pd
 
 # Helper functions
@@ -29,13 +28,12 @@ def create_dataframe(references):
 
 # main function
 
-def get_reference_data(file_name):
+def get_reference_data(file_path):
     references = {1: [None]*5, 2: [None]*5, 3: [None]*5}
     ref_number = -1
-    with pdfplumber.open(file_name) as pdf:
+    with pdfplumber.open(file_path) as pdf:
         page = pdf.pages[1]
-        text = page.extract_text()
-        text = text.split("\n")
+        text = page.extract_text().split("\n")
         for line in text:
             ref_number = get_ref(line, ref_number)
             if 1 <= ref_number <= 3:
@@ -54,7 +52,7 @@ def get_reference_data(file_name):
     df = create_dataframe(references)
     while incorrect:
         print(df)
-        answer = input("If there ARE mistakes, enter the reference #, followed by the column name (e.g. \"1,Phone #\"). If NO mistakes, enter \"Finished\".\n")
+        answer = input("\nIf there ARE mistakes, enter the reference #, followed by the column name (e.g. \"1,Phone #\"). If NO mistakes, enter \"Finished\".\n")
         answer = answer.split(",")
         if len(answer) == 2:
             row = f"Ref {answer[0]}:"
