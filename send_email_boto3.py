@@ -82,3 +82,6 @@ def send_emails():
     else:
         print("Email sent! Message ID:"),
         print(response['MessageId'])
+
+if __name__ == "__main__":
+    send_emails()
