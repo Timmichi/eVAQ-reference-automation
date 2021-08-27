@@ -173,7 +173,7 @@ def format_html(tup, sender, date):
                     font-family: 'Century Gothic', sans-serif;
                     color: #1b4675;
                   "
-                  >Statewide Technology Procurement (STP)<o:p></o:p
+                  >Statewide Technology Procurement (STP)<br /><o:p></o:p
                 ></span>
                 <span
                   style="
@@ -181,28 +181,22 @@ def format_html(tup, sender, date):
                     font-family: 'Century Gothic', sans-serif;
                     color: #1b4675;
                   "
-                  >CA Department of Technology&nbsp;(CDT)</span
+                  >CA Department of Technology&nbsp;(CDT)<br /></span
                 ><span
                   style="
                     font-size: 9pt;
                     font-family: 'Century Gothic', sans-serif;
                   "
-                  ><br /><span style="color: #009ecc"
+                  ><span style="color: #009ecc"
                     >916-431-4244 (Desk) 916-826-5334 (Cell)<o:p></o:p></span
-                ></span>
+                ></span><br />
                 <span
                   style="
                     font-size: 9pt;
                     font-family: 'Century Gothic', sans-serif;
                     color: #1f4e79;
                   "
-                  >Email: </span
-                ><span
-                  style="
-                    font-size: 9pt;
-                    font-family: 'Century Gothic', sans-serif;
-                  "
-                  ><a href="mailto:timothy.simanhadi@state.ca.gov"
+                  >Email: <a href="mailto:timothy.simanhadi@state.ca.gov"
                     >timothy.simanhadi@state.ca.gov</a
                   ></span
                 ><span

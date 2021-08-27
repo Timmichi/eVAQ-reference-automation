@@ -38,7 +38,7 @@ def p2_send_email(tup):
     SENDER_NAME = "Timothy Simanhadi"
     SENDER = f"{SENDER_NAME} <timothy.simanhadi@state.ca.gov>"
     RECIPIENT = tup.email_address
-    AWS_REGION = "us-west-2"
+    AWS_REGION = "us-west-1"
     SUBJECT = f"eVAQ Reference for {tup.vendor_name}"
     ATTACHMENT = tup.attachment_path
     BODY_TEXT = f'''\
