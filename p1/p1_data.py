@@ -21,7 +21,7 @@ def p1_create_files_and_get_data(input_file_name, directory_path):
                 command = f"ocrmypdf \"{file_name}\" \"{file_name}\" --force-ocr" # files with spaces in their name need to have quotations around them 
                 p = subprocess.Popen(command, cwd=curr_directory) # going into directory where files are located
                 p.wait()
-                print("Successfully converted PDF using OCR (optical character recognition)! 🔃\n")
+                print("\nSuccessfully converted PDF using OCR (optical character recognition)! 🔃\n")
                 print("\nDisplaying RAW 🥩 reference data extracted from PDF!\n")
                 df = get_data.get_reference_data(file_path)
                 print("\nFinished refactoring and verifying data! ✅\n")
@@ -40,7 +40,6 @@ def p1_create_files_and_get_data(input_file_name, directory_path):
                     data.extend([output_file_path, vendor_name])
                     email_data.append(data)
     email_data_df = pd.DataFrame(email_data,columns='eVAQ, ref, name, title, phone, email_address, project_title, attachment_path, vendor_name'.split(", "))
-    print(email_data_df)
     return email_data_df
     
 if __name__ == "__main__":

@@ -2,6 +2,7 @@
 Since we don't want to pass in credentials directly into code, follow these instructions:
 Configure Credentials: https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html
 Code referenced from here: https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-raw.html
+Information on importing bewteen modules: https://stackoverflow.com/questions/47319423/import-a-module-from-both-within-same-package-and-from-outside-the-package-in-py
 '''
 
 import os, boto3, glob, mimetypes
@@ -37,7 +38,7 @@ def p2_send_email(tup):
     SENDER_NAME = "Timothy Simanhadi"
     SENDER = f"{SENDER_NAME} <timothy.simanhadi@state.ca.gov>"
     RECIPIENT = tup.email_address
-    AWS_REGION = "us-west-1"
+    AWS_REGION = "us-west-2"
     SUBJECT = f"eVAQ Reference for {tup.vendor_name}"
     ATTACHMENT = tup.attachment_path
     BODY_TEXT = f'''\
@@ -75,10 +76,8 @@ def p2_send_email(tup):
 
     img_dir = ".\\images" # Enter Directory of all images. Depending on which directory we run the script in our terminal, this "." is relative to that. E.g. if we run script from "C:\Users\timfs\Desktop\WORK\eVAQ-reference-automation", script will run from "." as the home directory.
     data_path = os.path.join(img_dir,'*g') 
-    print(data_path)
     files = glob.glob(data_path) 
     names = ["blog_img", "facebook_img", "line_img", "logo_img", "twitter_img", "youtube_img"]
-    print(files)
     for index, f1 in enumerate(files): 
         with open(f1, "rb") as f: 
             msg_image = MIMEImage(f.read())
@@ -99,7 +98,6 @@ def p2_send_email(tup):
 
     # Add the attachment to the parent container.
     msg.attach(att)
-    #print(msg)
     try:
         #Provide the contents of the email.
         response = client.send_raw_email(
@@ -113,8 +111,8 @@ def p2_send_email(tup):
     except ClientError as e:
         print(e.response['Error']['Message'])
     else:
-        print("Email sent! Message ID:"),
-        print(response['MessageId'])
+        print(f"Email sent for eVAQ #{tup.eVAQ} Ref #{tup.ref}, {tup.name}, at {tup.email_address}! 📧 🎯"),
+        # print(response['MessageId'])
 
 if __name__ == "__main__":
     # to test this module, go to the main project directory "C:\Users\timfs\Desktop\WORK\eVAQ-reference-automation" and run python -m p2.p2_email

@@ -67,8 +67,8 @@ def format_html(tup, sender, date):
     >
       <p>Hi {tup.name},</p>
       <p>
-        I am {sender} from the California Department of Technology (CDT) and
-        I am contacting you for a reference check for {tup.vendor_name} because
+        I am {sender} from the California Department of Technology (CDT).
+        I am contacting you for a reference check for {tup.vendor_name}, because
         this vendor has listed you as a reference for their eVAQ application with
         CDT. I have attached a one-page questionnaire for your review and comment.
         Could you please provide your answers to me so that I may have your
@@ -175,8 +175,6 @@ def format_html(tup, sender, date):
                   "
                   >Statewide Technology Procurement (STP)<o:p></o:p
                 ></span>
-              </p>
-              <p class="MsoNormal">
                 <span
                   style="
                     font-size: 9pt;
@@ -192,8 +190,6 @@ def format_html(tup, sender, date):
                   ><br /><span style="color: #009ecc"
                     >916-431-4244 (Desk) 916-826-5334 (Cell)<o:p></o:p></span
                 ></span>
-              </p>
-              <p class="MsoNormal">
                 <span
                   style="
                     font-size: 9pt;

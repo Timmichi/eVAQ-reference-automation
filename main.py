@@ -18,9 +18,7 @@ DIRECTORY_PATH = "C:\\Users\\timfs\\Desktop\\WORK\\eVAQ-reference-automation\\eV
 def main():
     data_df = p1_data.p1_create_files_and_get_data(INPUT_FILE_NAME, DIRECTORY_PATH)
     for row in data_df.itertuples():
-        print(row)
         p2_email.p2_send_email(row)
-
 
 if __name__ == "__main__":
     main()
