@@ -13,7 +13,7 @@ import pandas as pd
 
 # Globals
 INPUT_FILE_NAME = "eVAQ.docx"
-DIRECTORY_PATH = r"C:\Users\timfs\Desktop\eVAQ-reference-automation\eVAQs"
+DIRECTORY_PATH = r"C:\Users\timfs\Desktop\WORK\eVAQ-reference-automation\eVAQs"
 
 def main():
     data_df = p1_data.p1_create_files_and_get_data(INPUT_FILE_NAME, DIRECTORY_PATH)
