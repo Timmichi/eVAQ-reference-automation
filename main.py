@@ -1,41 +1,27 @@
 '''
-1. Install Chocolatey: https://chocolatey.org/install
-2. Install pre tesseract, and ghostcript using choco. Install ocrmypdf using pip. https://ocrmypdf.readthedocs.io/en/latest/installation.html#installing-on-windows
-3. Install pdfplumber (pip install pdfplumber)
-4. Install pandas https://stackoverflow.com/questions/13842088/set-value-for-particular-cell-in-pandas-dataframe-using-index
+Naming Convention:
+1. Create a folder named "eVAQs"
+2. Inside, create folders for each EVAQ and use this naming convention: e.g. "eVAQ 0001113"
+3. Within each eVAQ folder, make sure the original pdf from the company is renamed to "eVAQ 000113.pdf" and the "eVAQ.docx" containing the template is inside as well.
+4. Set the correct Global Variables below to find the main "eVAQs" folder and the "eVAQ.docx"
+
+columns='Vendor Name, eVAQ #, ref #, Name, Title, Phone #, Email Address, Project Title, Attachment Path'
 '''
-import os, subprocess
+from p1 import p1_data
+from p2 import p2_email
 import pandas as pd
-import get_file_info, get_data, create_docs
 
 # Globals
 INPUT_FILE_NAME = "eVAQ.docx"
 DIRECTORY_PATH = r"C:\Users\timfs\Desktop\eVAQ-reference-automation\eVAQs"
 
 def main():
-    directory_path = DIRECTORY_PATH
-    for root, directories, files in os.walk(directory_path):
-        for directory in directories:
-            if "eVAQ" in directory:
-                curr_directory = os.path.join(root,directory)
-                file_name, file_path = get_file_info.get_file_info(curr_directory)
-                print(f"\nPerforming on {file_name}\n")
-                command = f"ocrmypdf \"{file_name}\" \"{file_name}\" --force-ocr" # files with spaces in their name need to have quotations around them 
-                p = subprocess.Popen(command, cwd=curr_directory) # going into directory where files are located
-                p.wait()
-                print("Successfully converted PDF using OCR (optical character recognition)!\n")
-                print("\nDisplaying RAW reference data extracted from PDF!\n")
-                df = get_data.get_reference_data(file_path)
-                print("\nFinished refactoring and verifying data!\n")
-                for i, [index, row] in enumerate(df.iterrows()):
-                    eVAQ_info = []
-                    eVAQ_info.append("".join(filter(lambda x: x.isdigit(), file_name))) # add evaq #
-                    eVAQ_info.append("".join(filter(lambda x: x.isdigit(), index))) # add ref #
-                    input_file_path = os.path.join(curr_directory, INPUT_FILE_NAME) # input file path 
-                    output_file_name = f"eVAQ {eVAQ_info[0]} Reference #{eVAQ_info[1]}.docx"
-                    output_file_path = os.path.join(curr_directory, output_file_name) # output file path
-                    ref_data = df.iloc[i] # contains ref data
-                    create_docs.create_eVAQ_form(input_file_path, output_file_path, ref_data, eVAQ_info, output_file_name) # creates eVAQ form
-        
+    data_df = p1_data.p1_create_files_and_get_data(INPUT_FILE_NAME, DIRECTORY_PATH)
+    data_df['vendor_name'] = input("Please enter the name of the vendor: ")
+    for row in data_df.itertuples():
+        print(row)
+        p2_email.p2_send_email(row)
+
+
 if __name__ == "__main__":
     main()

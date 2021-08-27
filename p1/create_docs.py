@@ -12,8 +12,8 @@ def create_eVAQ_form(input_file_path, output_file_path, ref_data, eVAQ_info, out
 
     for index, p in enumerate(document.paragraphs):
         if index == 0:
-            p.text = p.text.replace("[eVAQ]", eVAQ_info[0])
-            p.text = p.text.replace("[Ref#]", f"#{eVAQ_info[1]}")
+            p.text = p.text.replace("[eVAQ #]", eVAQ_info[0])
+            p.text = p.text.replace("[Ref #]", f"#{eVAQ_info[1]}")
         elif index == 1:                      
             p.text = p.text.replace("[Contact Name]", ref_data[0])
             p.text = p.text.replace("[Title]", ref_data[1])
@@ -30,7 +30,7 @@ def create_eVAQ_form(input_file_path, output_file_path, ref_data, eVAQ_info, out
 if __name__ == "__main__":
     ref_data = ["Timothy Simanhadi", "Software Engineer", "916-826-5334","timfsim@gmail.com", "Dashboard for Internal Users"]
     eVAQ_info = ["0001113", "1"]
-    input_file_path = "eVAQ.docx"
+    input_file_path = "test/eVAQ.docx"
     output_file_name = f"eVAQ {eVAQ_info[0]} Reference #{eVAQ_info[1]}.docx"
     output_file_path = output_file_name
     create_eVAQ_form(input_file_path, output_file_path, ref_data, eVAQ_info, output_file_name)

@@ -42,7 +42,7 @@ def get_reference_data(file_path):
                     references[ref_number][0] = " ".join(line[1].split()).strip()
                     references[ref_number][1] = " ".join(line[2].split()).strip()
                 elif "Phone" in line and "Address:" in line:
-                    line = re.split('#:|#|Email  Address:|Email Address:|Adderss:', line)
+                    line = re.split('#:|#|Email  Address:|Email Address:|Address:', line)
                     references[ref_number][2] = phone_format("" .join(list(filter(lambda char: char.isdigit(), "".join(line[1].split())))))
                     references[ref_number][3] = " ".join(line[2].split()).strip().replace(" ", "")
                 elif "Project" in line and "Title" in line and "Summary:" in line:
@@ -70,8 +70,8 @@ def get_reference_data(file_path):
 # checking if the module being ran is imported or is directly being ran
 # https://stackoverflow.com/questions/419163/what-does-if-name-main-do
 if __name__ == "__main__": 
-    file_name = "output.pdf"
-    get_reference_data(file_name) 
+    file_path = "test/output.pdf"
+    get_reference_data(file_path) 
 
 
 
