@@ -13,11 +13,27 @@ from email.mime.application import MIMEApplication
 from email.utils import make_msgid
 from dotenv import load_dotenv
 from collections import namedtuple
-import html_body 
+from . import html_body # same as writing "from p2" but saves the refactoring if we move the file out of the package
+from business.calendar import Calendar
+from datetime import date
+
+# Create Calendar object
+calendar = Calendar(
+  working_days=["monday", "tuesday", "wednesday", "thursday", "friday"],
+  # array items are either parseable date strings, or real datetime.date objects
+  holidays=["September 6th, 2021", "November 11th, 2021", "November 25 2021", "November 26 2021", "December 25 2021"], # state holidays 2021
+  extra_working_dates=[],)
+
+# Helper Function
+def get_first_check_date():
+    today = date.today()
+    start_date = Calendar.parse_date(today)
+    due_date = calendar.add_business_days(start_date, 3).strftime("%m/%d/%y")
+    return due_date
 
 def p2_send_email(tup):
     load_dotenv() # load environment variables containing credentials
-    DATE = "8/23/2021"
+    DATE = get_first_check_date()
     SENDER_NAME = "Timothy Simanhadi"
     SENDER = f"{SENDER_NAME} <timothy.simanhadi@state.ca.gov>"
     RECIPIENT = tup.email_address
@@ -57,10 +73,12 @@ def p2_send_email(tup):
     msg_body.attach(htmlpart)
 
 
-    img_dir = ".\\p2\\images\\" # Enter Directory of all images  
+    img_dir = ".\\images" # Enter Directory of all images. Depending on which directory we run the script in our terminal, this "." is relative to that. E.g. if we run script from "C:\Users\timfs\Desktop\WORK\eVAQ-reference-automation", script will run from "." as the home directory.
     data_path = os.path.join(img_dir,'*g') 
+    print(data_path)
     files = glob.glob(data_path) 
     names = ["blog_img", "facebook_img", "line_img", "logo_img", "twitter_img", "youtube_img"]
+    print(files)
     for index, f1 in enumerate(files): 
         with open(f1, "rb") as f: 
             msg_image = MIMEImage(f.read())
@@ -99,6 +117,9 @@ def p2_send_email(tup):
         print(response['MessageId'])
 
 if __name__ == "__main__":
+    # to test this module, go to the main project directory "C:\Users\timfs\Desktop\WORK\eVAQ-reference-automation" and run python -m p2.p2_email
+    # We go up to the main project so that the p2 package is in the SEARCH PATH. This allows us to have the other modules in the p2 package in the search path which allows us to properly import or reference it when we run THIS script. 
+    # In our main project, we can run our (main.py) script with no problem since we are referencing the specific package (absolute or relatively) for the imports in THIS module. Thus, there is no confusion in our main.py script where we are importing certain modules as everything is referenced properly (not ambiguously like "import html_body"). Doing an import without specifying the package (absolutely or relatively) is ONLY okay if we are in the main script as it will grab the closest module in the search path with the same name. Note, that this is also NOT recommended UNLESS the main.py script and the other module we are importing are on the SAME LEVEL.
     Data = namedtuple('Data', 'Index eVAQ ref name title phone email_address project_title attachment_path vendor_name')
-    data_tup = Data(Index='3', eVAQ='0001113', ref='3', name='Amy Roman', title='Speech Language Pathologist', phone='415-518-0592', email_address='timfsim@gmail.com', project_title='Cabling', attachment_path='C:\\Users\\timfs\\Desktop\\eVAQ-reference-automation\\eVAQs\\eVAQ 0001113\\eVAQ 0001113 Reference #3.docx', vendor_name='Smartbox Assistive Technologies, Inc.')
+    data_tup = Data(Index='1', eVAQ='0000000', ref='1', name='John Smith', title='Software Engineer', phone='123-456-7891', email_address='timfsim@gmail.com', project_title='Website Remediation', attachment_path='.\\test\\eVAQ 0000000\\eVAQ 0000000.pdf', vendor_name='Timothy Technologies, Inc.')
     p2_send_email(data_tup)

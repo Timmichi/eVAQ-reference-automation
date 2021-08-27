@@ -23,7 +23,7 @@ def create_dataframe(references):
     reference_list = []
     for key, value in references.items():
         reference_list.append(value)
-    df = pd.DataFrame(reference_list,index='Ref 1:,Ref 2:,Ref 3:'.split(","),columns='Name,Title,Phone #,Email Address,Project Title'.split(","))
+    df = pd.DataFrame(reference_list,index='Ref 1:,Ref 2:,Ref 3:'.split(","),columns='Name,Title,Number,Email,Project'.split(","))
     return df
 
 # main function
@@ -52,13 +52,13 @@ def get_reference_data(file_path):
     df = create_dataframe(references)
     while incorrect:
         print(df)
-        answer = input("\nIf there ARE mistakes, enter the reference #, followed by the column name (e.g. \"1,Phone #\"). If NO mistakes, enter \"Finished\".\n")
-        answer = answer.split(",")
+        answer = input("\nIf there ARE mistakes, enter the reference #, followed by the column name (e.g. \"1 Phone #\"). If NO mistakes, enter \"Finished\".\n").strip()
+        answer = answer.split(" ")
         if len(answer) == 2:
             row = f"Ref {answer[0]}:"
-            column = answer[1].strip()
+            column = answer[1]
             if row in df.index and column in df.columns:
-                df.at[row, column] = input("Type in the correct value for this cell: ") 
+                df.at[row, column] = input("Type in the correct value for this cell: ").strip() 
             else:
                 print("Please enter a valid row and column name!")
         elif answer == ["Finished"]:
@@ -70,7 +70,7 @@ def get_reference_data(file_path):
 # checking if the module being ran is imported or is directly being ran
 # https://stackoverflow.com/questions/419163/what-does-if-name-main-do
 if __name__ == "__main__": 
-    file_path = "test/output.pdf"
+    file_path = "..\\test\\eVAQ 0000000\\eVAQ 0000000.pdf"
     get_reference_data(file_path) 
 
 
