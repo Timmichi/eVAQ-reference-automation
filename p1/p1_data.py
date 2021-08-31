@@ -8,9 +8,25 @@
 import os, subprocess
 import pandas as pd
 from . import get_file_info, get_data, create_docs # same as writing "from p1" but saves the refactoring if we move the file out of the package
+from datetime import date
+from business.calendar import Calendar
+
+# Create Calendar object
+calendar = Calendar(
+  working_days=["monday", "tuesday", "wednesday", "thursday", "friday"],
+  # array items are either parseable date strings, or real datetime.date objects
+  holidays=["September 6th, 2021", "November 11th, 2021", "November 25 2021", "November 26 2021", "December 25 2021"], # state holidays 2021
+  extra_working_dates=[],)
+
+# Helper Function
+def get_first_check_date():
+    today = date.today()
+    start_date = Calendar.parse_date(today)
+    due_date = calendar.add_business_days(start_date, 3).strftime("%m/%d/%y")
+    return due_date
 
 def p1_create_files_and_get_data(input_file_name, directory_path):
-    
+    date = get_first_check_date()
     email_data = []
     for root, directories, files in os.walk(directory_path):
         for directory in directories:
@@ -37,9 +53,9 @@ def p1_create_files_and_get_data(input_file_name, directory_path):
                     ref_data = df.iloc[i] # contains ref data
                     create_docs.create_eVAQ_form(input_file_path, output_file_path, ref_data, eVAQ_info, output_file_path) # creates eVAQ form
                     data = eVAQ_info + ref_data.tolist()
-                    data.extend([output_file_path, vendor_name])
+                    data.extend([output_file_path, vendor_name, date])
                     email_data.append(data)
-    email_data_df = pd.DataFrame(email_data,columns='eVAQ, ref, name, title, phone, email_address, project_title, attachment_path, vendor_name'.split(", "))
+    email_data_df = pd.DataFrame(email_data,columns='eVAQ, ref, name, title, phone, email_address, project_title, summary, attachment_path, vendor_name, date'.split(", "))
     return email_data_df
     
 if __name__ == "__main__":

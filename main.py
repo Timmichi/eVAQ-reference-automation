@@ -5,7 +5,7 @@ Naming Convention:
 3. Within each eVAQ folder, make sure the original pdf from the company is renamed to "eVAQ 000113.pdf" and the "eVAQ.docx" containing the template is inside as well.
 4. Set the correct Global Variables below to find the main "eVAQs" folder and the "eVAQ.docx"
 
-columns='Vendor Name, eVAQ #, ref #, Name, Title, Phone #, Email Address, Project Title, Attachment Path'
+columns='eVAQ, ref, name, title, phone, email_address, project_title, summary, attachment_path, vendor_name, date'
 '''
 from p1 import p1_data
 from p2 import p2_email, html_body

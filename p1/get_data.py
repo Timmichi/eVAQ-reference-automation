@@ -23,20 +23,25 @@ def create_dataframe(references):
     reference_list = []
     for key, value in references.items():
         reference_list.append(value)
-    df = pd.DataFrame(reference_list,index='Ref 1:,Ref 2:,Ref 3:'.split(","),columns='Name,Title,Number,Email,Project'.split(","))
+    df = pd.DataFrame(reference_list,index='Ref 1:,Ref 2:,Ref 3:'.split(","),columns='Name,Title,Number,Email,Project,Summary'.split(","))
+    for i, summary in enumerate((df.get('Summary'))):
+        print(f"Ref {i+1} Summary:")
+        print(summary, end="\n\n")
     return df
 
 # main function
 
 def get_reference_data(file_path):
-    references = {1: [None]*5, 2: [None]*5, 3: [None]*5}
+    references = {1: [None]*6, 2: [None]*6, 3: [None]*6}
     ref_number = -1
     with pdfplumber.open(file_path) as pdf:
         page = pdf.pages[1]
         text = page.extract_text().split("\n")
-        for line in text:
-            ref_number = get_ref(line, ref_number)
+        i = 0
+        while i < len(text):
+            ref_number = get_ref(text[i], ref_number)
             if 1 <= ref_number <= 3:
+                line = text[i]
                 if "Name:" in line and "Title:" in line: 
                     line = re.split('Name:|Title:', line)
                     references[ref_number][0] = " ".join(line[1].split()).strip()
@@ -45,9 +50,32 @@ def get_reference_data(file_path):
                     line = re.split('#:|#|Email  Address:|Email Address:|Address:', line)
                     references[ref_number][2] = phone_format("" .join(list(filter(lambda char: char.isdigit(), "".join(line[1].split())))))
                     references[ref_number][3] = " ".join(line[2].split()).strip().replace(" ", "")
-                elif "Project" in line and "Title" in line and "Summary:" in line:
-                    line = re.split('Summary:', line)
-                    references[ref_number][4] = " ".join(line[1].split()).strip()
+                elif ("Project" in line and "Title" in line) or ("&" in line and "Summary:" in line):
+                    line = re.split(':', line)
+                    try:
+                        references[ref_number][4] = " ".join(line[1].split()).strip()
+                        i += 1
+                        while i < len(text) and "Reference" not in text[i] and "#" not in text[i]:
+                            if references[ref_number][5] == None:
+                                references[ref_number][5] = text[i]
+                            else:
+                                references[ref_number][5] += text[i]
+                            i += 1
+                        references[ref_number][5] = " ".join(references[ref_number][5].split())
+                        continue
+                    except IndexError:
+                        i += 1
+                        references[ref_number][4] = " ".join(text[i].split()).strip()
+                        i += 1
+                        while i < len(text) and "Reference" not in text[i] and "#" not in text[i]:
+                            if references[ref_number][5] == None:
+                                references[ref_number][5] = text[i]
+                            else:
+                                references[ref_number][5] += text[i]
+                            i += 1
+                        references[ref_number][5] = " ".join(references[ref_number][5].split())
+                        continue
+                i += 1
     incorrect = True
     df = create_dataframe(references)
     while incorrect:
@@ -70,7 +98,7 @@ def get_reference_data(file_path):
 # checking if the module being ran is imported or is directly being ran
 # https://stackoverflow.com/questions/419163/what-does-if-name-main-do
 if __name__ == "__main__": 
-    file_path = "..\\test\\eVAQ 0000000\\eVAQ 0000000.pdf"
+    file_path = ".\\test\\eVAQ 0000000\\eVAQ 0000000.pdf"
     get_reference_data(file_path) 
 
 

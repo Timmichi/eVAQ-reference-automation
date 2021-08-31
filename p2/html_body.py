@@ -1,4 +1,4 @@
-def format_html(tup, sender, date):
+def format_html(tup, sender):
   return f'''
   <html
     xmlns:v="urn:schemas-microsoft-com:vml"
@@ -80,7 +80,7 @@ def format_html(tup, sender, date):
         Question #1 is a verification that all of this information is correct
         which would give them a Pass rating. If this information were incorrect,
         then they would receive a Fail rating. The next 6 questions are explained
-        in the attachment. If you could return this questionnaire to me by {date},
+        in the attachment. If you could return this questionnaire to me by {tup.date},
         it would be greatly appreciated. Please let me know if you have any
         questions regarding this matter.
       </p>
