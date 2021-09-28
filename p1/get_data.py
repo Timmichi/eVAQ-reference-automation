@@ -1,6 +1,7 @@
 import re
 import pdfplumber
 import pandas as pd
+import time
 
 # Helper functions
 
@@ -16,8 +17,11 @@ def get_ref(line, ref_number):
     else:
         return -1
 
-def phone_format(n):                                                                                                                                  
-    return format(int(n[:-1]), ",").replace(",", "-") + n[-1]  
+def phone_format(n):
+    try:                                                                                                                                
+        return format(int(n[:-1]), ",").replace(",", "-") + n[-1]
+    except:
+        return n
 
 def create_dataframe(references):
     reference_list = []
@@ -38,7 +42,9 @@ def get_reference_data(file_path):
         page = pdf.pages[1]
         text = page.extract_text().split("\n")
         i = 0
-        while i < len(text):
+        start = time.perf_counter()
+        elapsed = 0
+        while (i < len(text)) or (elapsed > 10):
             ref_number = get_ref(text[i], ref_number)
             if 1 <= ref_number <= 3:
                 line = text[i]
@@ -76,6 +82,9 @@ def get_reference_data(file_path):
                         references[ref_number][5] = " ".join(references[ref_number][5].split())
                         continue
                 i += 1
+            curr = time.perf_counter()
+            elapsed = curr-start
+
     incorrect = True
     df = create_dataframe(references)
     while incorrect:
@@ -98,7 +107,8 @@ def get_reference_data(file_path):
 # checking if the module being ran is imported or is directly being ran
 # https://stackoverflow.com/questions/419163/what-does-if-name-main-do
 if __name__ == "__main__": 
-    file_path = ".\\test\\eVAQ 0000000\\eVAQ 0000000.pdf"
+    # file_path = ".\\test\\eVAQ 0000000\\eVAQ 0000000.pdf"
+    file_path = "C:\\Users\\timfs\\Desktop\\WORK\\eVAQ-reference-automation\\eVAQs\\eVAQ 0001158\\eVAQ 0001158.pdf"
     get_reference_data(file_path) 
 
 
